@@ -3,16 +3,17 @@ package com.sparkjobs;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 
+import com.datastax.spark.connector.japi.CassandraJavaUtil;
 import com.sparkjobs.model.Activity;
+import com.sparkjobs.model.ActivityByProduct;
 import com.sparkjobs.utils.LogProducer;
 import com.sparkjobs.utils.Settings;
+import com.sparkjobs.utils.SparkJobsUtils;
 
 public class BatchJob {
 
@@ -24,11 +25,8 @@ public class BatchJob {
 			LogProducer.load();
 		}
 
-		// get spark confgiruation
-		SparkConf sparkConf = new SparkConf().setAppName("Example Spark App").setMaster("local");
-
 		// setup spark session to be able to work with Dataset
-		SparkSession spark = SparkSession.builder().config(sparkConf).getOrCreate();
+		SparkSession spark = SparkJobsUtils.getSparkSesion();
 
 		// import data
 		Dataset<Row> input = spark.read().csv(Settings.getInstance().inputFilePath);
@@ -46,13 +44,17 @@ public class BatchJob {
 		 * Actions & Transformations
 		 */
 		activityDataset.createOrReplaceTempView("activity");
-		Dataset<Row> sqlResult = spark.sql("SELECT  " + "product, timestamp, referrer, "
-				+ "SUM( CASE WHEN action = 'page_view' THEN 1 ELSE 0 END) AS page_view_count, "
-				+ "SUM( CASE WHEN action = 'add_to_cart' THEN 1 ELSE 0 END) AS add_to_cart_count, "
-				+ "SUM( CASE WHEN action = 'purchase' THEN 1 ELSE 0 END) AS purchase_count " + "FROM activity "
-				+ "GROUP BY product, timestamp, referrer").cache();
-		sqlResult.write().partitionBy("referrer").mode(SaveMode.Append).parquet(Settings.getInstance().outputFilePath);
-
+		Dataset<ActivityByProduct> sqlResult = spark.sql("SELECT  " + "product, timestamp, "
+				+ "SUM( CASE WHEN action = 'add_to_cart' THEN 1 ELSE 0 END) AS addtocartcount, "
+				+ "SUM( CASE WHEN action = 'page_view' THEN 1 ELSE 0 END) AS pageviewcount, "
+				+ "SUM( CASE WHEN action = 'purchase' THEN 1 ELSE 0 END) AS purchasecount " + "FROM activity "
+				+ "GROUP BY product, timestamp").as(Encoders.bean(ActivityByProduct.class));
+		
+		sqlResult.show();
+		
+		CassandraJavaUtil.javaFunctions(sqlResult.rdd())
+				.writerBuilder("lambda", "batch_activity_by_product", CassandraJavaUtil.mapToRow(ActivityByProduct.class)).saveToCassandra();
+		
 		spark.close();
 
 	}

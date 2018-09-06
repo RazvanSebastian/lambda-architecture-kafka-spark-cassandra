@@ -1,6 +1,7 @@
 package com.kafka;
 
 import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -17,6 +18,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import com.kafka.config.IKafkaConstants;
 import com.kafka.model.Activity;
 import com.kafka.producer.ProducerCreator;
+
 
 public class KafkaMain {
 
@@ -68,6 +70,8 @@ public class KafkaMain {
 		while (true) {
 			// Send one record from random index
 			int index = random.nextInt(196);
+			activites.get(index).setTimestamp(System.currentTimeMillis());
+			
 			ProducerRecord<Long, Activity> record = new ProducerRecord<Long, Activity>(IKafkaConstants.TOPIC_NAME,
 					activites.get(index));
 			try {
@@ -99,7 +103,7 @@ public class KafkaMain {
 			while ((line = bufferedReader.readLine()) != null) {
 				String[] lineArray = line.split(",");
 				if (lineArray.length == 8) {
-					Activity activity = new Activity(Long.parseLong(lineArray[0]), lineArray[1], lineArray[2],
+					Activity activity = new Activity(System.currentTimeMillis(), lineArray[1], lineArray[2],
 							lineArray[3], lineArray[4], lineArray[5], lineArray[6], lineArray[7]);
 					list.add(activity);
 				}

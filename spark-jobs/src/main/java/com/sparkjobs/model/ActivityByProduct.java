@@ -2,17 +2,24 @@ package com.sparkjobs.model;
 
 import java.io.Serializable;
 
+import com.datastax.driver.mapping.annotations.Column;
+
 public class ActivityByProduct implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	private String product;
+
 	private Long timestamp;
-	private Long pageViewCount;
-	private Long addToCartCount;
-	private Long purchaseCount;
+
+	private Long pageviewcount;
+
+	private Long addtocartcount;
+
+	private Long purchasecount;
 
 	public ActivityByProduct() {
 		super();
@@ -23,14 +30,14 @@ public class ActivityByProduct implements Serializable {
 		this.product = product;
 	}
 
-	public ActivityByProduct(String product, Long timestamp, Long pageViewCount, Long addToCartCount,
-			Long purchaseCount) {
+	public ActivityByProduct(String product, Long timestamp, Long pageviewcount, Long addtocartcount,
+			Long purchasecount) {
 		super();
 		this.product = product;
 		this.timestamp = timestamp;
-		this.pageViewCount = pageViewCount;
-		this.addToCartCount = addToCartCount;
-		this.purchaseCount = purchaseCount;
+		this.pageviewcount = pageviewcount;
+		this.addtocartcount = addtocartcount;
+		this.purchasecount = purchasecount;
 	}
 
 	public String getProduct() {
@@ -49,34 +56,34 @@ public class ActivityByProduct implements Serializable {
 		this.timestamp = timestamp;
 	}
 
-	public Long getPageViewCount() {
-		return pageViewCount;
+	public Long getPageviewcount() {
+		return pageviewcount;
 	}
 
-	public void setPageViewCount(Long pageViewCount) {
-		this.pageViewCount = pageViewCount;
+	public void setPageviewcount(Long pageviewcount) {
+		this.pageviewcount = pageviewcount;
 	}
 
-	public Long getAddToCartCount() {
-		return addToCartCount;
+	public Long getAddtocartcount() {
+		return addtocartcount;
 	}
 
-	public void setAddToCartCount(Long addToCartCount) {
-		this.addToCartCount = addToCartCount;
+	public void setAddtocartcount(Long addtocartcount) {
+		this.addtocartcount = addtocartcount;
 	}
 
-	public Long getPurchaseCount() {
-		return purchaseCount;
+	public Long getPurchasecount() {
+		return purchasecount;
 	}
 
-	public void setPurchaseCount(Long purchaseCount) {
-		this.purchaseCount = purchaseCount;
+	public void setPurchasecount(Long purchasecount) {
+		this.purchasecount = purchasecount;
 	}
 
 	@Override
 	public String toString() {
-		return "ActivityByProduct [product=" + product + ", timestamp=" + timestamp + ", pageViewCount=" + pageViewCount
-				+ ", addToCartCount=" + addToCartCount + ", purchaseCount=" + purchaseCount + "]";
+		return "ActivityByProduct [product=" + product + ", timestamp=" + timestamp + ", pageviewcount=" + pageviewcount
+				+ ", addtocartcount=" + addtocartcount + ", purchasecount=" + purchasecount + "]";
 	}
 
 }
