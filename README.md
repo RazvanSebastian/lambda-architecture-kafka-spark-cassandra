@@ -93,10 +93,10 @@ cqlsh:lambda> create table stream_activity_by_product (
 
 ## **3. Start Java applciations**
 
-Run the **KafkaMain.class** from **kafka** project to generate messages to the cluster of Kafka brokers. You must be able to see in console at every 1 second one new message created. 
+Run the **KafkaMain.class** from **kafka** project to generate messages to the cluster of Kafka brokers. You must be able to see in console at every 1 second one new printed message. 
 
 
-Run the **BatchJob.class** and **StreamJob.class** from **sparkjobs** project. The duration between request to kafka cluster is set with 30 seconds. 
+Run the **BatchJob.class** and **StreamJob.class** from **sparkjobs** project. The duration between requests to kafka cluster is set to 30 seconds. 
 
 **_Note 1_** Make sure that you have the _data.csv_ file udner the _src/main/resources_ folder in both projects.
 
